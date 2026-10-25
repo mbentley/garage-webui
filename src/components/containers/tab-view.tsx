@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
-import { useMemo } from "react";
+import { JSX, useMemo } from "react";
 import { Tabs } from "react-daisyui";
 import { useSearchParams } from "react-router-dom";
 

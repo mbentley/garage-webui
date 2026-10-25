@@ -1,15 +1,15 @@
-FROM node:20-slim AS frontend
+FROM node:24-slim AS frontend
 WORKDIR /app
 
-RUN npm install -g corepack@latest && corepack use pnpm@latest
+RUN npm install -g corepack@latest && corepack enable
 
-COPY package.json pnpm-lock.yaml ./
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --store-dir /pnpm/store
 
 COPY . .
 RUN pnpm run build
 
-FROM golang:1.23 AS backend
+FROM golang:1.27 AS backend
 WORKDIR /app
 
 COPY backend/go.mod backend/go.sum ./
@@ -22,7 +22,7 @@ RUN make
 FROM scratch
 
 COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=ghcr.io/tarampampam/curl:8.6.0 /bin/curl /bin/curl
+COPY --from=ghcr.io/tarampampam/curl:8.16.0 /bin/curl /bin/curl
 COPY --from=backend /app/main /bin/main
 
 HEALTHCHECK --interval=5m --timeout=2s --retries=3 --start-period=15s CMD [ \
