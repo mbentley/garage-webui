@@ -4,7 +4,7 @@ export const useDebounce = <T extends (...args: any[]) => void>(
   fn: T,
   delay: number = 500
 ) => {
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const debouncedFn = useCallback(
     (...args: any[]) => {

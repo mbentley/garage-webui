@@ -13,6 +13,11 @@ export default defineConfig(({ mode }) => {
         "@": path.resolve(__dirname, "src"),
       },
     },
+    css: {
+      // daisyUI 4 + Tailwind 3 emit a few invalid selectors (e.g. `*tr:hover`)
+      // that browsers already ignore; let LightningCSS drop them when minifying.
+      lightningcss: { errorRecovery: true },
+    },
     server: {
       proxy: {
         "/api": {
